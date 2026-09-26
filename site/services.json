@@ -41,9 +41,15 @@
       "name": "Elsewhere",
       "services": [
         {
-          "name": "LinkedIn",
-          "description": "Bennett Anderson",
+          "name": "Bennett Anderson",
+          "description": "LinkedIn",
           "url": "https://www.linkedin.com/in/bennettanderson03",
+          "icon": "linkedin"
+        },
+        {
+          "name": "Aubrey Fornander",
+          "description": "LinkedIn",
+          "url": "https://www.linkedin.com/in/aubrey-fornander",
           "icon": "linkedin"
         }
       ]
