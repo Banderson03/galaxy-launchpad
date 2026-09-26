@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fornanderson.com</title>
+  <meta name="description" content="Launchpad for fornanderson.com services.">
+  <meta name="theme-color" content="#05060d">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <main>
+    <header class="hero">
+      <div class="hero-main">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span><span id="host">galaxy</span> · online</p>
+        <h1 id="title"><span class="domain">fornanderson</span><span class="tld">.com</span></h1>
+        <p id="tagline" class="tagline" hidden></p>
+        <p class="meta">
+          <span id="greeting">Hello</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <time id="clock"></time>
+        </p>
+      </div>
+      <aside id="weather" class="weather" aria-label="Weather" hidden></aside>
+    </header>
+
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Where to?" autocomplete="off" spellcheck="false" aria-label="Filter services">
+      <kbd aria-hidden="true">/</kbd>
+    </label>
+
+    <div id="groups" class="groups" aria-live="polite"></div>
+    <p id="empty" class="empty" hidden>Nothing out here by that name.</p>
+  </main>
+
+  <footer>
+    <span>hosted on <span id="footer-host">galaxy</span></span>
+    <span class="sep" aria-hidden="true">·</span>
+    <a href="https://open-meteo.com/">weather by Open-Meteo</a>
+  </footer>
+</body>
+</html>

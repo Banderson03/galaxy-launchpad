@@ -1,0 +1,65 @@
+{
+  "title": "fornanderson.com",
+  "tagline": "Our little corner of the internet",
+  "host": "galaxy",
+  "starSpeed": 3,
+  "shootingStarEvery": 5,
+  "weather": {
+    "label": "Lincoln, NE",
+    "latitude": 40.81,
+    "longitude": -96.7,
+    "units": "fahrenheit"
+  },
+  "groups": [
+    {
+      "name": "Everyday",
+      "services": [
+        {
+          "name": "Photos",
+          "description": "Immich · the family photo & video library",
+          "url": "https://photos.fornanderson.com",
+          "icon": "immich",
+          "health": "/health/photos"
+        },
+        {
+          "name": "Media",
+          "description": "Jellyfin · the family streaming library",
+          "url": "https://media.fornanderson.com",
+          "icon": "jellyfin",
+          "soon": true
+        },
+        {
+          "name": "Home",
+          "description": "Home Assistant · lights, sensors & automations",
+          "url": "https://home.fornanderson.com",
+          "icon": "home-assistant",
+          "soon": true
+        }
+      ]
+    },
+    {
+      "name": "Elsewhere",
+      "services": [
+        {
+          "name": "LinkedIn",
+          "description": "Bennett Anderson",
+          "url": "https://www.linkedin.com/in/bennettanderson03",
+          "icon": "linkedin"
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "note": "home network only",
+      "services": [
+        {
+          "name": "Proxmox",
+          "description": "galaxy hypervisor",
+          "url": "https://192.168.1.10:8006",
+          "icon": "proxmox",
+          "lan": true
+        }
+      ]
+    }
+  ]
+}
