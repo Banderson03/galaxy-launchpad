@@ -2,7 +2,7 @@
 
 The landing page for **fornanderson.com**. It's a starfield homepage that links to
 everything running on `galaxy`. It's a static site with no build step, served by
-nginx in Docker and published through the existing Cloudflare Tunnel.
+nginx in its own Proxmox LXC and published through the existing Cloudflare Tunnel.
 
 ```
 site/
@@ -12,7 +12,8 @@ site/
   services.json     ← the only file you edit to add services
 nginx/
   default.conf.template   static serving + /health/* proxies
-docker-compose.yml
+deploy/
+  install.sh        sets up nginx inside the LXC
 ```
 
 ## Using it
@@ -23,42 +24,54 @@ docker-compose.yml
 
 ## Deploy on galaxy
 
-On whichever Proxmox LXC/VM runs Docker (the one with Immich is simplest):
+### 1. Create the container
+
+In the Proxmox UI: **Create CT** with the **Debian 12** template, unprivileged.
+A static page needs almost nothing:
+
+| Setting | Value |
+|---|---|
+| Cores | 1 |
+| Memory | 256 MB (nginx uses ~10 MB) |
+| Disk | 2 GB |
+| Network | DHCP is fine, but a static IP (or DHCP reservation) keeps the tunnel pointing at the right place |
+
+### 2. Install
+
+In the container's console:
 
 ```bash
-git clone <this repo> launchpad && cd launchpad
-cp .env.example .env        # set IMMICH_URL if Immich is on a different host
-docker compose up -d
-curl -s localhost:8080/health/photos   # should print {"res":"pong"}
+apt-get update && apt-get install -y git
+git clone https://github.com/Banderson03/galaxy-launchpad.git /opt/launchpad
+IMMICH_URL=http://<immich-ip>:2283 sh /opt/launchpad/deploy/install.sh
 ```
 
-### Point the domain at it
+Find Immich's IP in Proxmox under its container → **Network**. Then check the status proxy:
 
-**Tunnel managed in the Cloudflare dashboard** (Zero Trust → Networks → Tunnels →
-your tunnel → Public Hostname → Add):
+```bash
+curl -s localhost/health/photos   # should print {"res":"pong"}
+```
+
+### 3. Point the domain at it
+
+In the Cloudflare dashboard (Zero Trust → Networks → Tunnels → your tunnel →
+Public Hostname → Add):
 
 | Subdomain | Domain | Type | URL |
 |---|---|---|---|
-| *(blank)* | fornanderson.com | HTTP | `localhost:8080` (or `<docker-host-ip>:8080`) |
+| *(blank)* | fornanderson.com | HTTP | `<launchpad-ip>:80` |
 
-Add a second one with subdomain `www` if you want `www.fornanderson.com` too.
+Add a second one with subdomain `www` if you want `www.fornanderson.com` too. Use the
+container's IP rather than `localhost`, since cloudflared lives in its own container.
 
-**Tunnel managed with a local `config.yml`**: add an ingress rule above the catch-all:
+### Updating
 
-```yaml
-ingress:
-  - hostname: fornanderson.com
-    service: http://localhost:8080
-  - hostname: photos.fornanderson.com
-    service: http://localhost:2283
-  - service: http_status:404
+```bash
+cd /opt/launchpad && git pull
 ```
 
-then `cloudflared tunnel route dns <tunnel> fornanderson.com` and restart cloudflared.
-
-If cloudflared runs in Docker, `localhost` means the cloudflared container itself.
-Use the host's LAN IP instead, or put both containers on a shared network and use
-`http://launchpad:80`.
+That's it for site changes: nginx serves `site/` straight from the repo. Only re-run
+`install.sh` (same command as above) if `nginx/default.conf.template` changed.
 
 ## Adding a service
 
@@ -83,8 +96,8 @@ Use the host's LAN IP instead, or put both containers on a shared network and us
    - `health` is optional. Leave it out and the card has no status dot.
 
 2. If you set `health`, add a matching `location = /health/<name>` block in
-   `nginx/default.conf.template` (there's a commented example), then
-   `docker compose restart`. Editing only `services.json` needs no restart. Just refresh.
+   `nginx/default.conf.template` (there's a commented example), then `git pull` and
+   re-run `install.sh` on the container. Editing only `services.json` needs just a pull.
 
 ## Weather
 
